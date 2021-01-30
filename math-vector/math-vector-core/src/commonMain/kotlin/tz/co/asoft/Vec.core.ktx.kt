@@ -3,6 +3,8 @@ package tz.co.asoft
 import kotlin.math.abs
 import kotlin.math.sqrt
 
+typealias V = Vec<*>
+
 fun <N : Number> V(x: N, y: N, z: N = 0 as N): Vec<N> = Vec(x, y, z)
 
 object Vector {
@@ -17,12 +19,14 @@ fun <T : Number, N : Number> Vec<N>.copy(
     z: T = this.z as T
 ) = Vec(x, y, z)
 
-fun <N : Number> Vec<N>.vecString(): String {
+fun Vec<*>.vecString(): String {
     val sX = x.toReadableString(emptyIfOne = true)
     val sY = y.signString() + abs(y.toDouble()).toReadableString(emptyIfOne = true)
     val sZ = z.signString() + abs(z.toDouble()).toReadableString(emptyIfOne = true)
     return "${sX}i${sY}j${sZ}k"
 }
+
+operator fun Vec<*>.unaryMinus() = Vec(-x.toDouble(), -y.toDouble(), -z.toDouble())
 
 fun Vec<*>.squareMagnitude() = (x.toDouble() * x.toDouble()) + (y.toDouble() * y.toDouble()) + (z.toDouble() * z.toDouble())
 
