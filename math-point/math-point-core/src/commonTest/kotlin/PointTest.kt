@@ -15,7 +15,7 @@ class PointTest {
 
     @Test
     fun can_mingle_point2_and_point3() {
-        val p2 = Point2(1, 2)
+        val p2 = Point(1, 2)
         val p3 = Point(1, 2, 3)
 
         val p = p2 + p3

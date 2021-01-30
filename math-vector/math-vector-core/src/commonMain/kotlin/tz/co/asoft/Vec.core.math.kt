@@ -1,19 +1,26 @@
 package tz.co.asoft
 
-operator fun Vec3<*>.plus(p: Vec3<*>) = Vec3(
+import kotlin.math.sqrt
+
+operator fun Vec<*>.plus(p: Vec<*>) = Vec(
     x = x.toDouble() + p.x.toDouble(),
     y = y.toDouble() + p.y.toDouble(),
     z = z.toDouble() + p.z.toDouble()
 )
 
-operator fun Vec3<*>.minus(p: Vec3<*>) = Vec3(
+operator fun Vec<*>.minus(p: Vec<*>) = Vec(
     x = x.toDouble() - p.x.toDouble(),
     y = y.toDouble() - p.y.toDouble(),
     z = z.toDouble() - p.z.toDouble()
 )
 
-operator fun Number.times(p: Vec3<*>) = Vec3(
+operator fun Number.times(p: Vec<*>) = Vec(
     x = toDouble() * p.x.toDouble(),
     y = toDouble() * p.y.toDouble(),
     z = toDouble() * p.z.toDouble()
 )
+
+
+fun Vec<*>.squareDistanceTo(v: Vec<*>) = (this - v).squareMagnitude()
+
+fun Vec<*>.distanceTo(v: Vec<*>) = sqrt(squareDistanceTo(v))

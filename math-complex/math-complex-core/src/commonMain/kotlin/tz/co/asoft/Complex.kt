@@ -1,26 +1,34 @@
 package tz.co.asoft
 
-class Complex<T : Number>(val a: T, val b: T) : Numeral<T> {
-    operator fun plus(other: Numeral<*>) = when (other) {
-        is Decimal -> Complex(a.toDouble() + other.value, b)
-        is Integer -> Complex(a.toDouble() + other.value, b)
-        is Complex<*> -> Complex(a.toDouble() + other.a.toDouble(), b.toDouble() + other.b.toDouble())
-        else -> throw IllegalArgumentException("Can't add an unknown to a ComplexNumber")
+data class Complex<T : Number>(val a: T, val b: T) {
+    companion object {
+        val ZERO = Complex(0, 0)
+        val i = Complex(0, 1)
     }
 
     override fun hashCode(): Int = toString().hashCode()
 
     override fun equals(other: Any?): Boolean = when (other) {
         is Number -> b.isZero() && other.isEqualTo(a)
-        is Decimal -> equals(other.value)
-        is Integer -> equals(other.value)
         is Complex<*> -> a.isEqualTo(other.a) && b.isEqualTo(other.b)
-        else -> throw IllegalArgumentException("Can't add an unknown to a ComplexNumber")
+        else -> false
     }
 
-    override fun toString(): String {
-        val sA = a.toReadableString()
-        val sB = b.signString() + b.toReadableString(emptyIfOne = true)
-        return "$sA${sB}i"
+    override fun toString() = when {
+        b.isZero() && a.isZero() -> "0"
+        b.isZero() && a.isNotZero() -> a.toReadableString()
+        b.isNotZero() && a.isZero() -> if (b.toDouble() <= 0.0) {
+            val sB = b.signString() + (-b.toDouble()).toReadableString(emptyIfOne = true)
+            "${sB}i"
+        } else {
+            val sB = b.toReadableString(emptyIfOne = true)
+            "${sB}i"
+        }
+        b.isNotZero() && a.isNotZero() -> {
+            val sA = a.toReadableString()
+            val sB = b.signString() + b.toReadableString(emptyIfOne = true)
+            "$sA${sB}i"
+        }
+        else -> throw IllegalStateException("Can't reach this state")
     }
 }

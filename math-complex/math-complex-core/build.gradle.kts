@@ -12,7 +12,6 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(project(":math-core"))
-                api(project(":math-numeral"))
             }
         }
 
