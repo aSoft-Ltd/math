@@ -1,46 +1,43 @@
 pluginManagement {
+    enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
     repositories {
         google()
-        jcenter()
         gradlePluginPortal()
         mavenCentral()
     }
 
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.namespace == "com.android") {
-                useModule("com.android.tools.build:gradle:${requested.version}")
+    dependencyResolutionManagement {
+        versionCatalogs {
+            file("gradle/versions").listFiles().map {
+                it.nameWithoutExtension to it.absolutePath
+            }.forEach { (name, path) ->
+                create(name) { from(files(path)) }
             }
         }
     }
 }
 
-rootProject.name = "math"
+fun includeRoot(name: String, path: String) {
+    include(":$name")
+    project(":$name").projectDir = File(path)
+}
 
-include(":math-core")
-include(":math-numeral")
+fun includeSubs(base: String, path: String = base, vararg subs: String) {
+    subs.forEach {
+        include(":$base-$it")
+        project(":$base-$it").projectDir = File("$path/$it")
+    }
+}
 
-include(":math-complex-core")
-project(":math-complex-core").projectDir = File("math-complex/math-complex-core")
+val tmp = 1
 
-include(":math-matrix-core")
-project(":math-matrix-core").projectDir = File("math-matrix/math-matrix-core")
+rootProject.name = "asoft"
 
-include(":math-point-core")
-project(":math-point-core").projectDir = File("math-point/math-point-core")
+// dependencies
+includeSubs("functions", "../functions", "core")
+includeSubs("expect", "../expect", "core")
 
-include(":math-point-canvas")
-project(":math-point-canvas").projectDir = File("math-point/math-point-canvas")
-
-include(":math-vector-core")
-project(":math-vector-core").projectDir = File("math-vector/math-vector-core")
-
-include(":math-vector-canvas")
-project(":math-vector-canvas").projectDir = File("math-vector/math-vector-canvas")
-
-include(":math-coordinates-cartesian-core")
-project(":math-coordinates-cartesian-core").projectDir = File("math-coordinates/math-coordinates-cartesian/math-coordinates-cartesian-core")
-include(":math-coordinates-cartesian-canvas")
-project(":math-coordinates-cartesian-canvas").projectDir = File("math-coordinates/math-coordinates-cartesian/math-coordinates-cartesian-canvas")
-include(":math-coordinates-cartesian-sample")
-project(":math-coordinates-cartesian-sample").projectDir = File("math-coordinates/math-coordinates-cartesian/math-coordinates-cartesian-sample")
+// submodules
+includeSubs("math", ".", "core")
+includeSubs("math-point", "point", "core")
