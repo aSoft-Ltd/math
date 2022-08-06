@@ -8,11 +8,8 @@ plugins {
 }
 
 generator {
-    immutable("Point3", "MutablePoint3", true)
-    immutable("Point2", "MutablePoint2", false)
-
-    mutable("MutablePoint3", "MutablePoint3", true)
-    mutable("MutablePoint2", "MutablePoint2", false)
+    subpackage("point")
+    interfaces(xy = "Point2", xyz = "Point3")
 }
 
 kotlin {

@@ -1,7 +1,7 @@
 package math.generator
 
 fun generateAllImmutableBinaryOperation(
-    params: List<NumberType>, defs: List<SpacialDef>
+    params: List<NumberType>, defs: List<SpatialDef>
 ): List<SourceFile> = mutableListOf<SourceFile>().apply {
     addAll(generateImmutableBinaryOperations(params, defs, "plus", "+"))
     addAll(generateImmutableBinaryOperations(params, defs, "minus", "-"))

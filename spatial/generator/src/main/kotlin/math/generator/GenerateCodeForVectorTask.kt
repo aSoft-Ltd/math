@@ -19,10 +19,7 @@ open class GenerateCodeForVectorTask : DefaultTask() {
     }
 
     fun generateCode(
-        buildDir: File,
-        path: String,
-        immutableDefs: List<SpacialDef>,
-        mutableDefs: List<SpacialDef>
+        buildDir: File, path: String, immutableDefs: List<SpatialDef>, mutableDefs: List<SpatialDef>
     ) {
         val mathDir = File(buildDir, "$path/math")
         val params = NumberType.values().toList()
@@ -33,16 +30,24 @@ open class GenerateCodeForVectorTask : DefaultTask() {
             mathDir.mkdirs()
         }
 
-        generateConstructors(params, defs).forEach { file ->
+        generateConstructors(params, ext.interfaces).forEach { file ->
             File(mathDir, file.name).apply {
                 createNewFile()
                 writeText(file.content);
             }
         }
 
-        val mathPointDir = File(mathDir, "point").also { it.mkdir() }
+        val subDir = File(mathDir, ext.sPackage).also { it.mkdir() }
+
+        generateConvertors(params, ext.interfaces, ext.sPackage).forEach { file ->
+            File(subDir, file.name).apply {
+                createNewFile()
+                writeText(file.content);
+            }
+        }
+
         generateCopyUtils(params, defs).forEach { file ->
-            File(mathPointDir, file.name).apply {
+            File(subDir, file.name).apply {
                 createNewFile()
                 writeText(file.content);
             }
@@ -52,7 +57,7 @@ open class GenerateCodeForVectorTask : DefaultTask() {
             addAll(generateImmutableBinaryOperations(params, immutableDefs, "plus", "+"))
             addAll(generateImmutableBinaryOperations(params, immutableDefs, "minus", "-"))
         }.forEach { file ->
-            File(mathPointDir, file.name).apply {
+            File(subDir, file.name).apply {
                 createNewFile()
                 writeText(file.content);
             }
@@ -62,14 +67,14 @@ open class GenerateCodeForVectorTask : DefaultTask() {
             addAll(generateMutableBinaryOperations(params, mutableDefs, "plus", "+"))
             addAll(generateMutableBinaryOperations(params, mutableDefs, "minus", "-"))
         }.forEach { file ->
-            File(mathPointDir, file.name).apply {
+            File(subDir, file.name).apply {
                 createNewFile()
                 writeText(file.content);
             }
         }
 
         generateImmutableDotOperationsForVectors(params, immutableDefs).forEach { file ->
-            File(mathPointDir, file.name).apply {
+            File(subDir, file.name).apply {
                 createNewFile()
                 writeText(file.content);
             }

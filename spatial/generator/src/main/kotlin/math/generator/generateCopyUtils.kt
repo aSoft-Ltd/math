@@ -1,6 +1,6 @@
 package math.generator
 
-fun generateCopyUtils(params: List<NumberType>, defs: List<SpacialDef>): List<SourceFile> {
+fun generateCopyUtils(params: List<NumberType>, defs: List<SpatialDef>): List<SourceFile> {
     val srcFiles = mutableListOf<SourceFile>()
     for (def in defs) {
         val code = buildString {

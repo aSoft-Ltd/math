@@ -21,8 +21,8 @@ open class GenerateCodeForPointTask : DefaultTask() {
     fun generateCode(
         buildDir: File,
         path: String,
-        immutableDefs: List<SpacialDef>,
-        mutableDefs: List<SpacialDef>
+        immutableDefs: List<SpatialDef>,
+        mutableDefs: List<SpatialDef>
     ) {
         val mathDir = File(buildDir, "$path/math")
         val params = NumberType.values().toList()
@@ -33,19 +33,27 @@ open class GenerateCodeForPointTask : DefaultTask() {
             mathDir.mkdirs()
         }
 
-        generateConstructors(params, defs).forEach { file ->
+        generateConstructors(params, ext.interfaces).forEach { file ->
             File(mathDir, file.name).apply {
                 createNewFile()
                 writeText(file.content);
             }
         }
 
-        val mathPointDir = File(mathDir, "point").also { it.mkdir() }
+        val subDir = File(mathDir, ext.sPackage).also { it.mkdir() }
+
+        generateConvertors(params, ext.interfaces, ext.sPackage).forEach { file ->
+            File(subDir, file.name).apply {
+                createNewFile()
+                writeText(file.content);
+            }
+        }
+
         mutableListOf<SourceFile>().apply {
             addAll(generateImmutableBinaryOperations(params, immutableDefs, "plus", "+"))
             addAll(generateImmutableBinaryOperations(params, immutableDefs, "minus", "-"))
         }.forEach { file ->
-            File(mathPointDir, file.name).apply {
+            File(subDir, file.name).apply {
                 createNewFile()
                 writeText(file.content);
             }
@@ -55,7 +63,7 @@ open class GenerateCodeForPointTask : DefaultTask() {
             addAll(generateMutableBinaryOperations(params, mutableDefs, "plus", "+"))
             addAll(generateMutableBinaryOperations(params, mutableDefs, "minus", "-"))
         }.forEach { file ->
-            File(mathPointDir, file.name).apply {
+            File(subDir, file.name).apply {
                 createNewFile()
                 writeText(file.content);
             }

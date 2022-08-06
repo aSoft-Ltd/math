@@ -8,11 +8,8 @@ plugins {
 }
 
 generator {
-    immutable("Vec3", "MutableVec3", true)
-    immutable("Vec2", "MutableVec2", false)
-
-    mutable("MutableVec3", "MutableVec3", true)
-    mutable("MutableVec2", "MutableVec2", false)
+    subpackage("vector")
+    interfaces(xy = "Vec2", xyz = "Vec3")
 }
 
 kotlin {

@@ -2,8 +2,6 @@ package math.vector
 
 import math.Vec
 
-operator fun Vec<*>.times(other: Vec<*>) = this dot other
-
 /**
  * (x1,y1,z1)x(x2,y2,z2)
  *  i   j    k

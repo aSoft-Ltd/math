@@ -8,11 +8,8 @@ plugins {
 }
 
 generator {
-    immutable("XY", "MutableXY", false)
-    immutable("XYZ", "MutableXYZ", true)
-
-    mutable("MutableXY", "MutableXY", false)
-    mutable("MutableXYZ", "MutableXYZ", true)
+    subpackage("spatial")
+    interfaces(xy = "XY", xyz = "XYZ")
 }
 
 kotlin {

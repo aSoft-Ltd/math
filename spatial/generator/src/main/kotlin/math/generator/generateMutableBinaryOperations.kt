@@ -2,7 +2,7 @@ package math.generator
 
 fun generateMutableBinaryOperations(
     params: List<NumberType>,
-    defs: List<SpacialDef>,
+    defs: List<SpatialDef>,
     opName: String,
     opSymbol: String,
 ): List<SourceFile> {

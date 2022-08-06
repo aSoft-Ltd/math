@@ -2,7 +2,7 @@ package math.generator
 
 fun generateImmutableDotOperationsForVectors(
     params: List<NumberType>,
-    defs: List<SpacialDef>,
+    defs: List<SpatialDef>,
 ): List<SourceFile> {
     val srcFiles = mutableListOf<SourceFile>()
     for (def in defs) {

@@ -1,7 +1,7 @@
 package math.generator
 
 fun generateDistanceOperations(
-    params: List<NumberType>, defs: List<SpacialDef>
+    params: List<NumberType>, defs: List<SpatialDef>
 ): List<SourceFile> {
     val srcFiles = mutableListOf<SourceFile>()
     for (def in defs) {
