@@ -2,9 +2,9 @@ import tz.co.asoft.*
 import kotlin.test.Test
 
 class Point3Test {
-    private val p1 = Point3(0, 0, 0)
-    private val p2 = Point3(3, 4, 5)
-    private val p3 = Point3(3.1, 4.0, 6.5)
+    private val p1 = Point(0, 0, 0)
+    private val p2 = Point(3, 4, 5)
+    private val p3 = Point(3.1, 4.0, 6.5)
 
     @Test
     fun should_have_a_proper_x_and_y() {

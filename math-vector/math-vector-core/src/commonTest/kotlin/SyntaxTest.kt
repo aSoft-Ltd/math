@@ -1,6 +1,6 @@
-import tz.co.asoft.Vec.i
-import tz.co.asoft.Vec.j
-import tz.co.asoft.Vec.k
+import tz.co.asoft.Vector.i
+import tz.co.asoft.Vector.j
+import tz.co.asoft.Vector.k
 import tz.co.asoft.*
 import kotlin.test.Test
 
@@ -16,7 +16,7 @@ class SyntaxTest {
         val v = (2 * i) + (3 * j) - (6 * k)
         expect(v.vecString()).toBe("2i+3j-6k")
         expect(Vec(2, 0, -3).vecString()).toBe("2i+0j-3k")
-        expect(Vec2(1, 1).vecString()).toBe("i+j")
-        expect((i - j).vecString()).toBe("i-j")
+        expect(Vec(1, 1).vecString()).toBe("i+j+0k")
+        expect((i - j).vecString()).toBe("i-j+0k")
     }
 }

@@ -14,8 +14,9 @@ fun main() {
 
     val coordinate: ICartesianCoordinate2d = CartesianCoordinate2d(context)
 
-    fun update(dt: Double) {
-        console.log("Animating $dt")
+    var lastDelta = 0.0
+    fun update(delta: Double) {
+        console.log("Animating ${delta - lastDelta}")
         u += dV
         coordinate.apply {
             clear()
@@ -23,6 +24,7 @@ fun main() {
             draw(u)
             draw(u, point, width = 1.0)
         }
+        lastDelta = delta
         window.requestAnimationFrame(::update)
     }
 
