@@ -34,10 +34,14 @@ val tmp = 1
 
 rootProject.name = "asoft"
 
+includeBuild("./spatial/generator")
+
 // dependencies
 includeSubs("functions", "../functions", "core")
 includeSubs("expect", "../expect", "core")
 
 // submodules
 includeSubs("math", ".", "core")
+includeSubs("math-spatial", "spatial", "core")
 includeSubs("math-point", "point", "core")
+includeSubs("math-vector", "vector", "core")

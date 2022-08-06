@@ -1,10 +1,10 @@
 import expect.expect
 import math.Point3
-import math.point.component1
-import math.point.component2
-import math.point.component3
+import math.spatial.component1
+import math.spatial.component2
+import math.spatial.component3
 import math.point.copy
-import math.point.cordString
+import math.spatial.cordString
 import math.point.map
 import kotlin.test.Test
 

@@ -8,11 +8,11 @@ plugins {
 }
 
 generator {
-    immutable("Point3", "MutablePoint3", true)
-    immutable("Point2", "MutablePoint2", false)
+    immutable("Vec3", "MutableVec3", true)
+    immutable("Vec2", "MutableVec2", false)
 
-    mutable("MutablePoint3", "MutablePoint3", true)
-    mutable("MutablePoint2", "MutablePoint2", false)
+    mutable("MutableVec3", "MutableVec3", true)
+    mutable("MutableVec2", "MutableVec2", false)
 }
 
 kotlin {
@@ -37,5 +37,5 @@ kotlin {
 
 aSoftOSSLibrary(
     version = asoft.versions.root.get(),
-    description = "A multiplatform math library for dealing with points in space"
+    description = "A multiplatform math library for dealing with vectors"
 )

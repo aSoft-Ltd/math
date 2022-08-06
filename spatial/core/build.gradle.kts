@@ -8,11 +8,11 @@ plugins {
 }
 
 generator {
-    immutable("Point3", "MutablePoint3", true)
-    immutable("Point2", "MutablePoint2", false)
+    immutable("XY", "MutableXY", false)
+    immutable("XYZ", "MutableXYZ", true)
 
-    mutable("MutablePoint3", "MutablePoint3", true)
-    mutable("MutablePoint2", "MutablePoint2", false)
+    mutable("MutableXY", "MutableXY", false)
+    mutable("MutableXYZ", "MutableXYZ", true)
 }
 
 kotlin {
@@ -24,7 +24,7 @@ kotlin {
         val commonMain by getting {
             kotlin.srcDir("build/generated/src/commonMain/kotlin")
             dependencies {
-                api(projects.mathSpatialCore)
+                api(projects.mathCore)
             }
         }
         val commonTest by getting {
