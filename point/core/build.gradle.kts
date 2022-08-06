@@ -38,12 +38,7 @@ val generateBuilders by tasks.creating {
 }
 
 enum class NumberType(val label: String, val default: String) {
-    Short("Short", "0"),
-    Byte("Byte", "0"),
-    Int("Int", "0"),
-    Long("Long", "0"),
-    Float("Float", "0f"),
-    Double("Double", "0.0");
+    Short("Short", "0"), Byte("Byte", "0"), Int("Int", "0"), Long("Long", "0"), Float("Float", "0f"), Double("Double", "0.0");
 
     fun canHold(type: NumberType) = when (this) {
         Short -> false
@@ -112,6 +107,13 @@ fun generate(path: String) {
             writeText(file.content);
         }
     }
+
+    generateSquareDistanceOperations(params, immutableDefs).forEach { file ->
+        File(mathPointDir, file.name).apply {
+            createNewFile()
+            writeText(file.content);
+        }
+    }
 }
 
 class SourceFile(val name: String, val content: String)
@@ -132,7 +134,6 @@ fun generateBuilders(params: List<NumberType>, defs: List<PointDef>): List<Sourc
                     
                 """.trimIndent()
             )
-            val nonSpecificConstructors = mutableListOf<String>()
             for (param in params) {
                 appendLine("@JvmOverloads")
                 appendLine("""@JvmName("${def.iFace}Of${param.label}")""")
@@ -175,8 +176,7 @@ fun generateCopyUtils(params: List<NumberType>, defs: List<PointDef>): List<Sour
 }
 
 fun generateAllImmutableBinaryOperation(
-    params: List<NumberType>,
-    defs: List<PointDef>
+    params: List<NumberType>, defs: List<PointDef>
 ): List<SourceFile> = mutableListOf<SourceFile>().apply {
     addAll(generateImutableBinaryOperations(params, defs, "plus", "+"))
     addAll(generateImutableBinaryOperations(params, defs, "minus", "-"))
@@ -185,8 +185,7 @@ fun generateAllImmutableBinaryOperation(
 }
 
 fun generateAllMutableBinaryOperation(
-    params: List<NumberType>,
-    defs: List<PointDef>
+    params: List<NumberType>, defs: List<PointDef>
 ): List<SourceFile> = mutableListOf<SourceFile>().apply {
     addAll(generateMutableBinaryOperations(params, defs, "plus", "+"))
     addAll(generateMutableBinaryOperations(params, defs, "minus", "-"))
@@ -296,6 +295,45 @@ fun generateMutableBinaryOperations(
             }
         }
         srcFiles.add(SourceFile("${def.iFace}${opName.capitalize()}Utils.kt", code))
+    }
+    return srcFiles
+}
+
+fun generateSquareDistanceOperations(
+    params: List<NumberType>, defs: List<PointDef>
+): List<SourceFile> {
+    val srcFiles = mutableListOf<SourceFile>()
+    for (def in defs) {
+
+        val code = buildString {
+            appendLine(
+                """
+                    package math.point
+                    
+                    import math.${def.iFace}
+                    import math.sqrt
+                    import kotlin.jvm.JvmName
+                    
+                    
+                """.trimIndent()
+            )
+            for (left in params) {
+                for (right in params) {
+                    appendLine("""@JvmName("${left.label}PointSquareDistanceTo${right.label}Point")""")
+                    append("inline fun ${def.iFace}<${left.label}>.")
+                    append("squareDistanceTo(point: ${def.iFace}<${right.label}>) =")
+                    if (def.hasX) append("  ((x - point.x) * (x - point.x)) ")
+                    if (def.hasY) append("+ ((y - point.y) * (y - point.y)) ")
+                    if (def.hasZ) append("+ ((z - point.z) * (z - point.z)) ")
+                    appendLine("\n")
+
+                    appendLine("""@JvmName("${left.label}PointDistanceTo${right.label}Point")""")
+                    append("inline fun ${def.iFace}<${left.label}>.")
+                    appendLine("distanceTo(point: ${def.iFace}<${right.label}>) = sqrt(squareDistanceTo(point))\n")
+                }
+            }
+        }
+        srcFiles.add(SourceFile("${def.iFace}DistanceUtils.kt", code))
     }
     return srcFiles
 }

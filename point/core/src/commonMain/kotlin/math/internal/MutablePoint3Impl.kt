@@ -2,8 +2,11 @@ package math.internal
 
 import math.MutablePoint3
 
-internal data class MutablePoint3Impl<N : Number>(
+@PublishedApi
+internal data class MutablePoint3Impl<N>(
     override var x: N,
     override var y: N,
     override var z: N
-) : MutablePoint3<N>
+) : MutablePoint3<N> {
+    override fun toString() = "Point(x=$x,y=$y,z=$z)"
+}

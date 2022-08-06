@@ -1,8 +1,11 @@
 import expect.expect
 import math.Point3
-import math.copy
-import math.cordString
+import math.point.component1
+import math.point.component2
+import math.point.component3
+import math.point.copy
 import math.point.cordString
+import math.point.map
 import kotlin.test.Test
 
 class Point3Test {
@@ -32,7 +35,7 @@ class Point3Test {
 
     @Test
     fun can_copy_a_long_int_from_a_long() {
-        val p = p1.copy(x = 6.5)
+        val p = p1.map { it.toDouble() }.copy(x = 6.5)
         expect(p.x).toBe(6.5)
         expect(p.y).toBe(0.0)
     }
