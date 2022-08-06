@@ -1,31 +1,17 @@
 package tz.co.asoft
 
-fun <N : Number> Point(x: N, y: N, z: N? = null) = Point3(
-    x = x,
-    y = y,
-    z = z ?: 0
-)
+data class Point<N : Number>(
+    val x: N,
+    val y: N,
+    val z: N
+) {
+    companion object {
+        val origin = Point(0, 0, 0)
+    }
 
-operator fun Point2<*>.plus(p: Point3<*>) = Point3(
-    x = x.toDouble() + p.x.toDouble(),
-    y = y.toDouble() + p.y.toDouble(),
-    z = p.z.toDouble()
-)
-
-operator fun Point3<*>.plus(p: Point2<*>) = Point3(
-    x = x.toDouble() + p.x.toDouble(),
-    y = y.toDouble() + p.y.toDouble(),
-    z = z.toDouble()
-)
-
-operator fun Point2<*>.minus(p: Point3<*>) = Point3(
-    x = x.toDouble() + p.x.toDouble(),
-    y = y.toDouble() + p.y.toDouble(),
-    z = p.z.toDouble()
-)
-
-operator fun Point3<*>.minus(p: Point2<*>) = Point3(
-    x = x.toDouble() + p.x.toDouble(),
-    y = y.toDouble() + p.y.toDouble(),
-    z = z.toDouble()
-)
+    override fun toString(): String = "Point(x=${x.toReadableString()},y=${y.toReadableString()},z=${z.toReadableString()})"
+    override fun equals(other: Any?): Boolean = when (other) {
+        is Point<*> -> x.isEqualTo(other.x) && y.isEqualTo(other.y) && z.isEqualTo(other.z)
+        else -> false
+    }
+}

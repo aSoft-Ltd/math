@@ -1,10 +1,12 @@
 package tz.co.asoft
 
+fun Number.isNotZero() = !isZero()
+
 fun Number.isZero(): Boolean {
-    if (this == 0) return true
-    if (this == 0.0) return true
-    if (this == 0f) return true
-    if (this == 0L) return true
+    if (this == 0 || this == -0) return true
+    if (this == 0.0 || this == -0.0) return true
+    if (this == 0f || this == -0f) return true
+    if (this == 0L || this == -0L) return true
     return false
 }
 

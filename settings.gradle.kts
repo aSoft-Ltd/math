@@ -18,6 +18,13 @@ pluginManagement {
 rootProject.name = "math"
 
 include(":math-core")
+include(":math-numeral")
+
+include(":math-complex-core")
+project(":math-complex-core").projectDir = File("math-complex/math-complex-core")
+
+include(":math-matrix-core")
+project(":math-matrix-core").projectDir = File("math-matrix/math-matrix-core")
 
 include(":math-point-core")
 project(":math-point-core").projectDir = File("math-point/math-point-core")
