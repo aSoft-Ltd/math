@@ -22,7 +22,7 @@ fun generateImmutableBinaryOperations(
             )
             for (leftParam in params) {
                 for (rightParam in params) {
-//                    appendLine("""@JvmName("${leftDef.iFace}${leftParam.label}${opName.capitalize()}${rightDef.iFace}${rightParam.label}")""")
+                    appendLine("""@JvmName("${leftDef.iFace}${leftParam.label}${opName.capitalize()}${rightDef.iFace}${rightParam.label}")""")
                     append("inline operator fun ${leftDef.iFace}<${leftParam.label}>.")
                     append("$opName(other: ${rightDef.iFace}<${rightParam.label}>) = ")
                     when {

@@ -8,12 +8,11 @@ enum class NumberType(val label: String, val default: String) {
     Float("Float", "0f"),
     Double("Double", "0.0");
 
-    fun canHold(type: NumberType) = when (this) {
-        Short -> false
-        Byte -> false
-        Int -> listOf(Short, Byte, Int).contains(type)
-        Long -> listOf(Short, Byte, Int, Long).contains(type)
-        Float -> type != Double
-        Double -> true
+    internal fun canBeOperatedWith(other: NumberType) = when (this) {
+        Short, Byte -> false
+        Int -> listOf(Short, Byte, Int).contains(other)
+        Long -> other != Double && other != Float
+        Float -> other != Double
+        else -> true
     }
 }

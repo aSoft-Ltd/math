@@ -10,21 +10,19 @@ open class GenerateCodeForVectorTask : DefaultTask() {
     private val ext get() = project.extensions.getByType<SpatialGeneratorExtension>()
 
     @OutputDirectory
-    val outPutDir = File("generated/src/commonMain/kotlin")
+    val outPutDir = File(project.buildDir, "generated/src/commonMain/kotlin")
 
 
     @TaskAction
     fun doGenerate() {
-        generateCode(project.buildDir, outPutDir.path, ext.immutableDefs, ext.mutableDefs)
+        generateCode(outPutDir, ext.immutableDefs, ext.mutableDefs)
     }
 
     fun generateCode(
-        buildDir: File, path: String, immutableDefs: List<SpatialDef>, mutableDefs: List<SpatialDef>
+        outputDir: File, immutableDefs: List<SpatialDef>, mutableDefs: List<SpatialDef>
     ) {
-        val mathDir = File(buildDir, "$path/math")
+        val mathDir = File(outputDir, "math")
         val params = NumberType.values().toList()
-
-        val defs = mutableDefs + immutableDefs
 
         if (!mathDir.exists()) {
             mathDir.mkdirs()
@@ -46,7 +44,21 @@ open class GenerateCodeForVectorTask : DefaultTask() {
             }
         }
 
-        generateCopyUtils(ext.interfaces,ext.sPackage).forEach { file ->
+        generateCopyUtils(ext.interfaces, ext.sPackage).forEach { file ->
+            File(subDir, file.name).apply {
+                createNewFile()
+                writeText(file.content);
+            }
+        }
+
+        generateImmutableScalarOperations(params,ext.interfaces,ext.sPackage).forEach { file ->
+            File(subDir, file.name).apply {
+                createNewFile()
+                writeText(file.content);
+            }
+        }
+
+        generateMutableScalarOperations(params,ext.interfaces,ext.sPackage).forEach { file ->
             File(subDir, file.name).apply {
                 createNewFile()
                 writeText(file.content);
@@ -54,8 +66,8 @@ open class GenerateCodeForVectorTask : DefaultTask() {
         }
 
         mutableListOf<SourceFile>().apply {
-            addAll(generateImmutableBinaryOperations(params, ext.interfaces,ext.sPackage, "plus", "+"))
-            addAll(generateImmutableBinaryOperations(params, ext.interfaces,ext.sPackage, "minus", "-"))
+            addAll(generateImmutableBinaryOperations(params, ext.interfaces, ext.sPackage, "plus", "+"))
+            addAll(generateImmutableBinaryOperations(params, ext.interfaces, ext.sPackage, "minus", "-"))
         }.forEach { file ->
             File(subDir, file.name).apply {
                 createNewFile()
@@ -64,8 +76,8 @@ open class GenerateCodeForVectorTask : DefaultTask() {
         }
 
         mutableListOf<SourceFile>().apply {
-            addAll(generateMutableBinaryOperations(params,  ext.interfaces,ext.sPackage,"plus", "+"))
-            addAll(generateMutableBinaryOperations(params,  ext.interfaces,ext.sPackage,"minus", "-"))
+            addAll(generateMutableBinaryOperations(params, ext.interfaces, ext.sPackage, "plus", "+"))
+            addAll(generateMutableBinaryOperations(params, ext.interfaces, ext.sPackage, "minus", "-"))
         }.forEach { file ->
             File(subDir, file.name).apply {
                 createNewFile()
@@ -73,7 +85,14 @@ open class GenerateCodeForVectorTask : DefaultTask() {
             }
         }
 
-        generateImmutableDotOperationsForVectors(params, immutableDefs).forEach { file ->
+        generateImmutableDotProduct(params, ext.interfaces).forEach { file ->
+            File(subDir, file.name).apply {
+                createNewFile()
+                writeText(file.content);
+            }
+        }
+
+        generateImmutableCrossProduct(params, ext.interfaces).forEach { file ->
             File(subDir, file.name).apply {
                 createNewFile()
                 writeText(file.content);

@@ -1,12 +1,5 @@
 package math.generator
 
-private fun NumberType.canBeOperatedWith(other: NumberType) = when (this) {
-    NumberType.Short, NumberType.Byte -> false
-    NumberType.Int -> listOf(NumberType.Short, NumberType.Byte, NumberType.Int).contains(other)
-    NumberType.Long -> other != NumberType.Double && other != NumberType.Float
-    NumberType.Float -> other != NumberType.Double
-    else -> true
-}
 
 fun generateMutableBinaryOperations(
     params: List<NumberType>,

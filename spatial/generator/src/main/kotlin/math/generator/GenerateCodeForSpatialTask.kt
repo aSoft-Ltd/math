@@ -10,18 +10,18 @@ open class GenerateCodeForSpatialTask : DefaultTask() {
     private val ext get() = project.extensions.getByType<SpatialGeneratorExtension>()
 
     @OutputDirectory
-    val outPutDir = File("generated/src/commonMain/kotlin")
+    val outPutDir = File(project.buildDir,"generated/src/commonMain/kotlin")
 
 
     @TaskAction
     fun doGenerate() {
-        generateCode(project.buildDir, outPutDir.path, ext.immutableDefs, ext.mutableDefs)
+        generateCode(outPutDir, ext.immutableDefs, ext.mutableDefs)
     }
 
     fun generateCode(
-        buildDir: File, path: String, immutableDefs: List<SpatialDef>, mutableDefs: List<SpatialDef>
+        outputDir: File, immutableDefs: List<SpatialDef>, mutableDefs: List<SpatialDef>
     ) {
-        val mathDir = File(buildDir, "$path/math")
+        val mathDir = File(outputDir, "math")
         val params = NumberType.values().toList()
 
         val defs = mutableDefs + immutableDefs
@@ -47,6 +47,20 @@ open class GenerateCodeForSpatialTask : DefaultTask() {
         }
 
         generateCopyUtils(ext.interfaces, ext.sPackage).forEach { file ->
+            File(subDir, file.name).apply {
+                createNewFile()
+                writeText(file.content);
+            }
+        }
+
+        generateImmutableScalarOperations(params,ext.interfaces,ext.sPackage).forEach { file ->
+            File(subDir, file.name).apply {
+                createNewFile()
+                writeText(file.content);
+            }
+        }
+
+        generateMutableScalarOperations(params,ext.interfaces,ext.sPackage).forEach { file ->
             File(subDir, file.name).apply {
                 createNewFile()
                 writeText(file.content);
