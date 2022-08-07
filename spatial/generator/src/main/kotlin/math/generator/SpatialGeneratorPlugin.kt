@@ -6,7 +6,7 @@ import org.gradle.api.plugins.InvalidPluginException
 
 open class SpatialGeneratorPlugin : Plugin<Project> {
     override fun apply(target: Project) {
-        target.extensions.create("generator", SpacialGeneratorExtension::class.java)
+        target.extensions.create("generator", SpatialGeneratorExtension::class.java)
         val clazz = when {
             target.name.contains("spatial") -> GenerateCodeForSpatialTask::class.java
             target.name.contains("point") -> GenerateCodeForPointTask::class.java

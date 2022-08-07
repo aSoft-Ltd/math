@@ -1,25 +1,24 @@
 package math.generator
 
-fun generateCopyUtils(params: List<NumberType>, defs: List<SpatialDef>): List<SourceFile> {
+fun generateCopyUtils(ifaces: SpatialInterfaces, subpackage: String): List<SourceFile> {
     val srcFiles = mutableListOf<SourceFile>()
-    for (def in defs) {
+    for (def in ifaces.toAllDefs()) {
         val code = buildString {
             appendLine(
                 """
                     @file:Suppress("unused", "FunctionName")
-                    package math.point
+                    package math.$subpackage
                     
                     import math.${def.iFace}
+                    import math.internal.${def.imp}
                     
                 """.trimIndent()
             )
-            for (param in params) {
-                appendLine("inline fun ${def.iFace}<${param.label}>.copy(")
-                if (def.hasX) appendLine("\tx: ${param.label} = this.x,")
-                if (def.hasY) appendLine("\ty: ${param.label} = this.y,")
-                if (def.hasZ) appendLine("\tz: ${param.label} = this.z,")
-                appendLine(") = ${def.iFace}(x, y${if (def.hasZ) ", z" else ""})\n")
-            }
+            appendLine("inline fun <N> ${def.iFace}<N>.copy(")
+            if (def.hasX) appendLine("\tx: N = this.x,")
+            if (def.hasY) appendLine("\ty: N = this.y,")
+            if (def.hasZ) appendLine("\tz: N = this.z,")
+            appendLine(") : ${def.iFace}<N> = ${def.imp}(x, y${if (def.hasZ) ", z" else ""})\n")
         }
         srcFiles.add(SourceFile("${def.iFace}CopyUtils.kt", code))
     }

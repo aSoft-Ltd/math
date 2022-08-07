@@ -1,6 +1,6 @@
 package math.generator
 
-class SpacialInterfaces(
+class SpatialInterfaces(
     val xy: String,
     val xyz: String
 ) {

@@ -7,7 +7,7 @@ import org.gradle.kotlin.dsl.getByType
 import java.io.File
 
 open class GenerateCodeForVectorTask : DefaultTask() {
-    private val ext get() = project.extensions.getByType<SpacialGeneratorExtension>()
+    private val ext get() = project.extensions.getByType<SpatialGeneratorExtension>()
 
     @OutputDirectory
     val outPutDir = File("generated/src/commonMain/kotlin")
@@ -46,7 +46,7 @@ open class GenerateCodeForVectorTask : DefaultTask() {
             }
         }
 
-        generateCopyUtils(params, defs).forEach { file ->
+        generateCopyUtils(ext.interfaces,ext.sPackage).forEach { file ->
             File(subDir, file.name).apply {
                 createNewFile()
                 writeText(file.content);
@@ -54,8 +54,8 @@ open class GenerateCodeForVectorTask : DefaultTask() {
         }
 
         mutableListOf<SourceFile>().apply {
-            addAll(generateImmutableBinaryOperations(params, immutableDefs, "plus", "+"))
-            addAll(generateImmutableBinaryOperations(params, immutableDefs, "minus", "-"))
+            addAll(generateImmutableBinaryOperations(params, ext.interfaces,ext.sPackage, "plus", "+"))
+            addAll(generateImmutableBinaryOperations(params, ext.interfaces,ext.sPackage, "minus", "-"))
         }.forEach { file ->
             File(subDir, file.name).apply {
                 createNewFile()
@@ -64,8 +64,8 @@ open class GenerateCodeForVectorTask : DefaultTask() {
         }
 
         mutableListOf<SourceFile>().apply {
-            addAll(generateMutableBinaryOperations(params, mutableDefs, "plus", "+"))
-            addAll(generateMutableBinaryOperations(params, mutableDefs, "minus", "-"))
+            addAll(generateMutableBinaryOperations(params,  ext.interfaces,ext.sPackage,"plus", "+"))
+            addAll(generateMutableBinaryOperations(params,  ext.interfaces,ext.sPackage,"minus", "-"))
         }.forEach { file ->
             File(subDir, file.name).apply {
                 createNewFile()

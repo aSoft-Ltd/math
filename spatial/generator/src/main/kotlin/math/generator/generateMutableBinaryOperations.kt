@@ -1,56 +1,67 @@
 package math.generator
 
+private fun NumberType.canBeOperatedWith(other: NumberType) = when (this) {
+    NumberType.Short, NumberType.Byte -> false
+    NumberType.Int -> listOf(NumberType.Short, NumberType.Byte, NumberType.Int).contains(other)
+    NumberType.Long -> other != NumberType.Double && other != NumberType.Float
+    NumberType.Float -> other != NumberType.Double
+    else -> true
+}
+
 fun generateMutableBinaryOperations(
     params: List<NumberType>,
-    defs: List<SpatialDef>,
+    ifaces: SpatialInterfaces,
+    subpackage: String,
     opName: String,
     opSymbol: String,
 ): List<SourceFile> {
     val srcFiles = mutableListOf<SourceFile>()
-    for (def in defs) {
-
+    for ((leftDef, rightDef) in ifaces.toMutableDefs().permutations()) {
         val code = buildString {
             appendLine(
                 """
                     @file:Suppress("unused", "FunctionName")
-                    package math.point
+                    package math.$subpackage
                     
-                    import math.${def.iFace}
+                    import math.*
                     import kotlin.jvm.JvmName
-                    
                     
                 """.trimIndent()
             )
-            for (left in params) {
-                for (right in params) {
-                    if (!left.canHold(right)) continue
-                    appendLine("""@JvmName("${left.label}${opName.capitalize()}${right.label}")""")
-                    append("inline operator fun ${def.iFace}<${left.label}>.")
-                    appendLine("$opName(point: ${def.iFace}<${right.label}>) {")
-                    if (def.hasX) appendLine("\tx $opSymbol= point.x")
-                    if (def.hasY) appendLine("\ty $opSymbol= point.y")
-                    if (def.hasZ) appendLine("\tz $opSymbol= point.z")
-                    appendLine("}\n")
+            for (leftParam in params) {
+                for (rightParam in params) {
+                    if (!leftParam.canBeOperatedWith(rightParam)) continue
+                    appendLine("""@JvmName("${leftDef.iFace}${leftParam.label}${opName.capitalize()}${rightDef.iFace}${rightParam.label}")""")
+                    append("inline operator fun ${leftDef.iFace}<${leftParam.label}>.")
+                    appendLine("$opName(other: ${rightDef.iFace}<${rightParam.label}>) {")
+                    when {
+                        !leftDef.hasZ && !rightDef.hasZ -> {
+                            appendLine("\tthis.x $opSymbol= other.x")
+                            appendLine("\tthis.y $opSymbol= other.y")
+                        }
 
-                    appendLine("""@JvmName("${left.label}${opName.capitalize()}${right.label}")""")
-                    append("inline operator fun ${def.iFace}<${left.label}>.")
-                    appendLine("$opName(other: ${right.label}) {")
-                    if (def.hasX) appendLine("\tx $opSymbol= other")
-                    if (def.hasY) appendLine("\ty $opSymbol= other")
-                    if (def.hasZ) appendLine("\tz $opSymbol= other")
-                    appendLine("}\n")
+                        !leftDef.hasZ && rightDef.hasZ -> {
+                            appendLine("\tthis.x $opSymbol= other.x")
+                            appendLine("\tthis.y $opSymbol= other.y")
+                        }
 
-                    appendLine("""@JvmName("${left.label}${opName.capitalize()}${right.label}")""")
-                    append("inline operator fun ${right.label}.")
-                    appendLine("$opName(point: ${def.iFace}<${left.label}>) {")
-                    if (def.hasX) appendLine("\tpoint.x = this $opSymbol point.x")
-                    if (def.hasY) appendLine("\tpoint.y = this $opSymbol point.y")
-                    if (def.hasZ) appendLine("\tpoint.z = this $opSymbol point.z")
+                        leftDef.hasZ && !rightDef.hasZ -> {
+                            appendLine("\tthis.x $opSymbol= other.x")
+                            appendLine("\tthis.y $opSymbol= other.y")
+                            appendLine("\tthis.z $opSymbol= ${rightParam.default}")
+                        }
+
+                        leftDef.hasZ && rightDef.hasZ -> {
+                            appendLine("\tthis.x $opSymbol= other.x")
+                            appendLine("\tthis.y $opSymbol= other.y")
+                            appendLine("\tthis.z $opSymbol= other.z")
+                        }
+                    }
                     appendLine("}\n")
                 }
             }
         }
-        srcFiles.add(SourceFile("${def.iFace}${opName.capitalize()}Utils.kt", code))
+        srcFiles.add(SourceFile("${leftDef.iFace}${opName.capitalize()}${rightDef.iFace}Utils.kt", code))
     }
     return srcFiles
 }

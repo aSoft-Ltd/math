@@ -7,7 +7,7 @@ import org.gradle.kotlin.dsl.getByType
 import java.io.File
 
 open class GenerateCodeForSpatialTask : DefaultTask() {
-    private val ext get() = project.extensions.getByType<SpacialGeneratorExtension>()
+    private val ext get() = project.extensions.getByType<SpatialGeneratorExtension>()
 
     @OutputDirectory
     val outPutDir = File("generated/src/commonMain/kotlin")
@@ -19,10 +19,7 @@ open class GenerateCodeForSpatialTask : DefaultTask() {
     }
 
     fun generateCode(
-        buildDir: File,
-        path: String,
-        immutableDefs: List<SpatialDef>,
-        mutableDefs: List<SpatialDef>
+        buildDir: File, path: String, immutableDefs: List<SpatialDef>, mutableDefs: List<SpatialDef>
     ) {
         val mathDir = File(buildDir, "$path/math")
         val params = NumberType.values().toList()
@@ -49,7 +46,7 @@ open class GenerateCodeForSpatialTask : DefaultTask() {
             }
         }
 
-        generateCopyUtils(params, defs).forEach { file ->
+        generateCopyUtils(ext.interfaces, ext.sPackage).forEach { file ->
             File(subDir, file.name).apply {
                 createNewFile()
                 writeText(file.content);
@@ -57,10 +54,10 @@ open class GenerateCodeForSpatialTask : DefaultTask() {
         }
 
         mutableListOf<SourceFile>().apply {
-            addAll(generateImmutableBinaryOperations(params, defs, "plus", "+"))
-            addAll(generateImmutableBinaryOperations(params, defs, "minus", "-"))
-            addAll(generateImmutableBinaryOperations(params, defs, "times", "*"))
-            addAll(generateImmutableBinaryOperations(params, defs, "div", "/"))
+            addAll(generateImmutableBinaryOperations(params, ext.interfaces, ext.sPackage, "plus", "+"))
+            addAll(generateImmutableBinaryOperations(params, ext.interfaces, ext.sPackage, "minus", "-"))
+            addAll(generateImmutableBinaryOperations(params, ext.interfaces, ext.sPackage, "times", "*"))
+            addAll(generateImmutableBinaryOperations(params, ext.interfaces, ext.sPackage, "div", "/"))
         }.forEach { file ->
             File(subDir, file.name).apply {
                 createNewFile()
@@ -69,10 +66,10 @@ open class GenerateCodeForSpatialTask : DefaultTask() {
         }
 
         mutableListOf<SourceFile>().apply {
-            addAll(generateMutableBinaryOperations(params, defs, "plus", "+"))
-            addAll(generateMutableBinaryOperations(params, defs, "minus", "-"))
-            addAll(generateMutableBinaryOperations(params, defs, "times", "*"))
-            addAll(generateMutableBinaryOperations(params, defs, "div", "/"))
+            addAll(generateMutableBinaryOperations(params, ext.interfaces, ext.sPackage, "plus", "+"))
+            addAll(generateMutableBinaryOperations(params, ext.interfaces, ext.sPackage, "minus", "-"))
+            addAll(generateMutableBinaryOperations(params, ext.interfaces, ext.sPackage, "times", "*"))
+            addAll(generateMutableBinaryOperations(params, ext.interfaces, ext.sPackage, "div", "/"))
         }.forEach { file ->
             File(subDir, file.name).apply {
                 createNewFile()

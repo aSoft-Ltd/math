@@ -1,6 +1,6 @@
 package math.generator
 
-fun generateConstructors(params: List<NumberType>, ifaces: SpacialInterfaces): List<SourceFile> {
+fun generateConstructors(params: List<NumberType>, ifaces: SpatialInterfaces): List<SourceFile> {
     val srcFiles = mutableListOf<SourceFile>()
     for (def in ifaces.toAllDefs()) {
         val code = buildString {

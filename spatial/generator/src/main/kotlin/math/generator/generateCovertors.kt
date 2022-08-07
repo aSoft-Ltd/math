@@ -1,13 +1,11 @@
 package math.generator
 
 fun generateConvertors(
-    params: List<NumberType>,
-    ifaces: SpacialInterfaces,
-    subpackage: String
+    params: List<NumberType>, ifaces: SpatialInterfaces, subpackage: String
 ): List<SourceFile> {
     val srcFiles = mutableListOf<SourceFile>()
 
-    val conversions = ifaces.toAllDefs().permutate()
+    val conversions = ifaces.toAllDefs().permutations()
 
     for ((from, to) in conversions) {
         if (from.iFace == to.iFace || from.hasZ == to.hasZ) continue
@@ -30,16 +28,19 @@ fun generateConvertors(
                 !from.hasZ && to.hasZ -> {
                     for (param in params) {
                         appendLine("""@JvmName("convertFrom${from.iFace}${param.label}To${to.iFace}${param.label}")""")
-                        append("inline fun ${from.iFace}<${param.label}>.to${to.iFace}() : ${to.iFace}<${param.label}> = ")
-                        appendLine("${to.imp}(x,y,${param.default})\n")
+                        append("inline fun ${from.iFace}<${param.label}>.to${to.iFace}(")
+                        append("x: ${param.label} = this.x, ")
+                        append("y: ${param.label} = this.y, ")
+                        append("z: ${param.label} = ${param.default}) : ${to.iFace}<${param.label}> = ")
+                        appendLine("${to.imp}(x,y,z)\n")
                     }
                     appendLine("""@JvmName("convertFrom${from.iFace}To${to.iFace}")""")
-                    append("inline fun <N> ${from.iFace}<N>.to${to.iFace}(z: N) : ${to.iFace}<N> = ${to.imp}(x,y,z)")
+                    append("inline fun <N> ${from.iFace}<N>.to${to.iFace}(x: N = this.x, y: N = this.y, z: N) : ${to.iFace}<N> = ${to.imp}(x,y,z)")
                 }
 
                 from.hasZ && !to.hasZ -> {
                     appendLine("""@JvmName("convertFrom${from.iFace}To${to.iFace}")""")
-                    append("inline fun <N> ${from.iFace}<N>.to${to.iFace}() : ${to.iFace}<N> = ${to.imp}(x,y)\n")
+                    append("inline fun <N> ${from.iFace}<N>.to${to.iFace}(x: N = this.x, y: N = this.y) : ${to.iFace}<N> = ${to.imp}(x,y)\n")
                 }
 
                 else -> {}

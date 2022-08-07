@@ -1,9 +1,9 @@
 package math.generator
 
-open class SpacialGeneratorExtension {
+open class SpatialGeneratorExtension {
     internal val immutableDefs = mutableListOf<SpatialDef>()
     internal val mutableDefs = mutableListOf<SpatialDef>()
-    var interfaces = SpacialInterfaces("", "")
+    var interfaces = SpatialInterfaces("", "")
     var sPackage = "spatial"
 
     fun subpackage(name: String) {
@@ -11,7 +11,7 @@ open class SpacialGeneratorExtension {
     }
 
     fun interfaces(xy: String, xyz: String) {
-        interfaces = SpacialInterfaces(xy, xyz)
+        interfaces = SpatialInterfaces(xy, xyz)
     }
 
     fun mutable(iFace: String, imp: String, hasZ: Boolean) {
