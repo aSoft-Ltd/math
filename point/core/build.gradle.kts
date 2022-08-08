@@ -17,6 +17,11 @@ kotlin {
     js(IR) { library() }
 //    val nativeTargets = nativeTargets()
     val nativeTargets = linuxTargets(true)
+    targets.configureEach {
+        compilations.all {
+            compileKotlinTask.dependsOn("generateCode")
+        }
+    }
     sourceSets {
         val commonMain by getting {
             kotlin.srcDir("build/generated/src/commonMain/kotlin")

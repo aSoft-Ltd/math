@@ -1,6 +1,6 @@
 package math.generator
 
-fun generateConvertors(
+fun generateInternalConvertors(
     params: List<NumberType>, ifaces: SpatialInterfaces, subpackage: String
 ): List<SourceFile> {
     val srcFiles = mutableListOf<SourceFile>()

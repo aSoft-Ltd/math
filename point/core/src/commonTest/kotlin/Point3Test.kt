@@ -21,7 +21,7 @@ class Point3Test {
 
     @Test
     fun should_display_point_to_string_well() {
-        expect(p2.toString()).toBe("Point(x=3,y=4,z=5)")
+        expect(p2.toString()).toBe("(x=3, y=4, z=5)")
         expect(p2.cordString()).toBe("(3,4,5)")
     }
 

@@ -1,8 +1,7 @@
-import math.Vec
 import math.vector.times
-import math.Vector.i
-import math.Vector.j
-import math.Vector.k
+import math.Vector3.i
+import math.Vector3.j
+import math.Vector3.k
 import math.vector.vecString
 import expect.expect
 import math.Vec3

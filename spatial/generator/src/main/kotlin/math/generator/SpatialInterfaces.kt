@@ -1,9 +1,11 @@
 package math.generator
 
+import java.io.Serializable
+
 class SpatialInterfaces(
     val xy: String,
     val xyz: String
-) {
+) : Serializable {
     fun toAllDefs() = toMutableDefs() + toImmutableDefs()
 
     fun toMutableDefs() = mutableListOf<SpatialDef>().apply {

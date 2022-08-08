@@ -27,7 +27,7 @@ fun generateImmutableCrossProduct(
                         leftDef.hasZ && rightDef.hasZ -> {
                             appendLine("Vec3(")
                             appendLine("\tx = (y * vec.z) - (z * vec.y),")
-                            appendLine("\ty = (z * vec.x) - (x * vec.y),")
+                            appendLine("\ty = (z * vec.x) - (x * vec.z),")
                             appendLine("\tz = (x * vec.y) - (y * vec.x)")
                             appendLine(")\n")
                         }

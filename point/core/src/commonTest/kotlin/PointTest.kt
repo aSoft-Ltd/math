@@ -1,9 +1,9 @@
 import expect.expect
 import math.Point2
 import math.Point3
-import math.point.distanceTo
 import math.point.plus
-import math.point.squareDistanceTo
+import math.spatial.distanceTo
+import math.spatial.squareDistanceTo
 import kotlin.test.Test
 
 class PointTest {
