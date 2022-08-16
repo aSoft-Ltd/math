@@ -9,7 +9,8 @@ fun generateMutableBinaryOperations(
     opSymbol: String,
 ): List<SourceFile> {
     val srcFiles = mutableListOf<SourceFile>()
-    for ((leftDef, rightDef) in ifaces.toMutableDefs().permutations()) {
+
+    for (def in ifaces.toMutableDefs()) {
         val code = buildString {
             appendLine(
                 """
@@ -24,37 +25,33 @@ fun generateMutableBinaryOperations(
             for (leftParam in params) {
                 for (rightParam in params) {
                     if (!leftParam.canBeOperatedWith(rightParam)) continue
-                    appendLine("""@JvmName("${leftDef.iFace}${leftParam.label}${opName.capitalize()}${rightDef.iFace}${rightParam.label}")""")
-                    append("inline operator fun ${leftDef.iFace}<${leftParam.label}>.")
-                    appendLine("$opName(other: ${rightDef.iFace}<${rightParam.label}>) {")
-                    when {
-                        !leftDef.hasZ && !rightDef.hasZ -> {
-                            appendLine("\tthis.x $opSymbol= other.x")
-                            appendLine("\tthis.y $opSymbol= other.y")
-                        }
+                    appendLine("""@JvmName("${def.iFace}${leftParam.label}${opName.capitalize()}XY${rightParam.label}")""")
+                    append("inline operator fun ${def.iFace}<${leftParam.label}>.")
+                    appendLine("${opName}Assign(other: XY<${rightParam.label}>) {")
+                    if (def.hasX) appendLine("\tx $opSymbol= other.x")
+                    if (def.hasY) appendLine("\ty $opSymbol= other.y")
+                    if (def.hasZ) appendLine("\tz $opSymbol= ${rightParam.default}")
+                    appendLine("}\n")
 
-                        !leftDef.hasZ && rightDef.hasZ -> {
-                            appendLine("\tthis.x $opSymbol= other.x")
-                            appendLine("\tthis.y $opSymbol= other.y")
-                        }
+                    appendLine("""@JvmName("${def.iFace}${leftParam.label}${opName.capitalize()}XY${rightParam.label}")""")
+                    append("inline operator fun ${def.iFace}<${leftParam.label}>.")
+                    appendLine("${opName}Assign(other: XYZ<${rightParam.label}>) {")
+                    if (def.hasX) appendLine("\tx $opSymbol= other.x")
+                    if (def.hasY) appendLine("\ty $opSymbol= other.y")
+                    if (def.hasZ) appendLine("\tz $opSymbol= other.y")
+                    appendLine("}\n")
 
-                        leftDef.hasZ && !rightDef.hasZ -> {
-                            appendLine("\tthis.x $opSymbol= other.x")
-                            appendLine("\tthis.y $opSymbol= other.y")
-                            appendLine("\tthis.z $opSymbol= ${rightParam.default}")
-                        }
-
-                        leftDef.hasZ && rightDef.hasZ -> {
-                            appendLine("\tthis.x $opSymbol= other.x")
-                            appendLine("\tthis.y $opSymbol= other.y")
-                            appendLine("\tthis.z $opSymbol= other.z")
-                        }
-                    }
+                    appendLine("""@JvmName("${def.iFace}${leftParam.label}${opName.capitalize()}${rightParam.label}")""")
+                    append("inline operator fun ${def.iFace}<${leftParam.label}>.")
+                    appendLine("${opName}Assign(other: ${rightParam.label}) {")
+                    if (def.hasX) appendLine("\tx $opSymbol= other")
+                    if (def.hasY) appendLine("\ty $opSymbol= other")
+                    if (def.hasZ) appendLine("\tz $opSymbol= other")
                     appendLine("}\n")
                 }
             }
         }
-        srcFiles.add(SourceFile("${leftDef.iFace}${opName.capitalize()}${rightDef.iFace}Utils.kt", code))
+        srcFiles.add(SourceFile("${def.iFace}${opName.capitalize()}Utils.kt", code))
     }
     return srcFiles
 }
