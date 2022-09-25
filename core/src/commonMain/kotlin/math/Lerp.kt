@@ -6,9 +6,9 @@ package math
  *
  * @param b is the endpoint
  *
- * @param t is the interpolation ration
+ * @param t is the interpolation ratio
  */
-fun lerp(a: Double, b: Double, t: Double): Double = a + (b - a) * t
+inline fun lerp(a: Double, b: Double, t: Double): Double = a + (b - a) * t
 
 /**
  * Linear interpolation between point a and b
@@ -16,6 +16,6 @@ fun lerp(a: Double, b: Double, t: Double): Double = a + (b - a) * t
  *
  * @param b is the endpoint
  *
- * @param t is the interpolation ration
+ * @param t is the interpolation ratio
  */
-fun lerp(a: Number, b: Number, t: Double) = math.lerp(a.toDouble(), b.toDouble(), t)
+inline fun lerp(a: Number, b: Number, t: Double) = math.lerp(a.toDouble(), b.toDouble(), t)
